@@ -132,3 +132,5 @@ if __name__ == "__main__":
     vk = VK(access_token, user_id)
     vk.send_all('For course project/photo_JSON')
 
+#  требуется сделать Progress bar и requerements.
+
