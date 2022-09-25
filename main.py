@@ -5,6 +5,9 @@ from pprint import pprint
 
 from datetime import datetime
 
+from tqdm import tqdm
+
+
 with open('token.txt', encoding='utf-8') as file:
     TOKEN = file.readline()
 
@@ -23,7 +26,7 @@ class VK:
         url = 'https://api.vk.com/method/photos.get'
         params = {
             'owner_id': self.id,
-            'album_id': 'profile',
+            'album_id': 'wall',
             'rev': 0,
             'extended': 1,
             }
@@ -38,7 +41,7 @@ class VK:
     def get_max_photo_list(self):
         result = self.get_photos_dict()
         max_photo_list = []
-        for item in result['response']['items']:
+        for item in tqdm(result['response']['items'], desc='Скачиваем фото', unit=' фото'):
             photo_dict = {'file_name': f"{item['likes']['count']}.jpg"}
             the_biggest = 0
             for photo_size in item['sizes']:
@@ -113,15 +116,15 @@ def upload_photo(some_json):
                'Authorization': f'OAuth {yandex_token}'}
 
     photo_list = some_json
-    for item in photo_list:
+    for item in tqdm(photo_list, desc='Отправляем фото на ЯДиск', unit=' фото'):
         response = requests.post(
             url=url,
             headers=headers,
             params={'path': f"For course project/{item['file_name']}", 'url': item['link']}
         )
         response.raise_for_status()
-        if response.status_code == 202:
-            print('success')
+        # if response.status_code == 202:
+        #     print('success')
 
 
 if __name__ == "__main__":
@@ -131,6 +134,3 @@ if __name__ == "__main__":
 
     vk = VK(access_token, user_id)
     vk.send_all('For course project/photo_JSON')
-
-#  требуется сделать Progress bar и requerements.
-
