@@ -1,10 +1,7 @@
 import json
-
 import requests
 from pprint import pprint
-
 from datetime import datetime
-
 from tqdm import tqdm
 
 
@@ -23,10 +20,11 @@ class VK:
         self.params = {'access_token': self.token, 'v': self.version}
 
     def get_photos_dict(self):
+        """This function gets json dict from VK"""
         url = 'https://api.vk.com/method/photos.get'
         params = {
             'owner_id': self.id,
-            'album_id': 'wall',
+            'album_id': 'profile',
             'rev': 0,
             'extended': 1,
             }
@@ -34,11 +32,13 @@ class VK:
         return response.json()
 
     def _convert_time(self, some_time):
+        """This function converts date to comfortable view"""
         timestamp = int(some_time)
         res = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
         return res
 
     def get_max_photo_list(self):
+        """This function make a list with max size photo and append date, if it's photo's duplicate """
         result = self.get_photos_dict()
         max_photo_list = []
         for item in tqdm(result['response']['items'], desc='Скачиваем фото', unit=' фото'):
@@ -63,24 +63,29 @@ class VK:
         return max_photo_list
 
     def get_send_list(self):
+        """This function makes list for recording in a txt file"""
         var = self.get_max_photo_list()
         for item in var:
             del item['link']
         return var
 
     def _get_json_file(self):
+        """This function records list in a file"""
         with open('photos.json', 'w') as res:
             json.dump(self.get_send_list(), res, indent=4)
 
     def _send_json(self, yadisk_file_path):
+        """This function send json to YandexDisk"""
         self._get_json_file()
         upload_file_to_disc(yadisk_file_path)
 
     def _send_photo(self):
+        """This function send photo from VK to YandexDisk"""
         photo_list = self.get_max_photo_list()
         upload_photo(photo_list)
 
     def send_all(self, yadisk_file_path):
+        """This function send json file and photo from VK to YandexDisk"""
         self._send_json(yadisk_file_path)
         self._send_photo()
 
@@ -101,7 +106,7 @@ def _get_upload_link(yadisk_file_path):
 
 
 def upload_file_to_disc(yadisk_file_path, file_name='photos.json'):
-    """This function can upload chosen file to yandex disk"""
+    """This function can upload a chosen file to yandex disk"""
     upload_link = _get_upload_link(yadisk_file_path=yadisk_file_path)  # получаем ссылку в виде json
     href = upload_link.get('href', '')  # получаем обяз. параметр href для метода put, что ниже)
     response = requests.put(href, data=open(file_name, 'rb'))  # делаем запрос, указываем href и
@@ -111,6 +116,7 @@ def upload_file_to_disc(yadisk_file_path, file_name='photos.json'):
 
 
 def upload_photo(some_json):
+    """This function uploads photo from some json-file to YandexDisk"""
     url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
     headers = {'Content_Type': 'application/json',
                'Authorization': f'OAuth {yandex_token}'}
