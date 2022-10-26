@@ -47,3 +47,4 @@ class YandexDisk:
             response.raise_for_status()
             if response.status_code == 202:
                 print('success')
+

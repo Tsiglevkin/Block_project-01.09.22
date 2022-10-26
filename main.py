@@ -1,12 +1,16 @@
 from VK import VK
+import configparser
+from pprint import pprint
 
-with open('token.txt', encoding='utf-8') as f:
-    vk_token = f.readline()
+
+c = configparser.ConfigParser()
+c.read('settings.ini')
+vk_token = c['VK']['vk_token']
+
 
 if __name__ == "__main__":
-
-    access_token = vk_token
     user_id = '607170157'
 
-    vk = VK(access_token, user_id)
+    vk = VK(vk_token, user_id)
     vk.send_all('For course project/photo_JSON')
+
