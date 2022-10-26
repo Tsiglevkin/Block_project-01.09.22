@@ -3,11 +3,12 @@ import requests
 from datetime import datetime
 from tqdm import tqdm
 from yandex import YandexDisk
+import configparser
 
-with open('OAuth_token.txt', encoding='utf-8') as f:
-    yandex_token = f.readline()
 
-disk = YandexDisk(yandex_token)
+c = configparser.ConfigParser()
+c.read('settings.ini')
+disk = YandexDisk(c['Yandex']['yandex_token'])
 
 
 class VK:
@@ -86,3 +87,6 @@ class VK:
         """This function send json file and photo from VK to YandexDisk"""
         self._send_json(yadisk_file_path)
         self._send_photo()
+
+
+
