@@ -1,4 +1,4 @@
-from VK import VK
+from VK.VK import VK
 import configparser
 from pprint import pprint
 

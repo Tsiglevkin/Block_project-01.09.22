@@ -16,8 +16,8 @@ class YandexDisk:
         upload_url = self.link
         parameters = {'path': yadisk_file_path, 'overwrite': 'True'}  # параметры запроса для определения пути файла и
         # и его перезаписи в случае, если он там уже есть. Параметры берутся из документации API.
-        response = requests.get(upload_url, headers=self.get_headers(), params=parameters)  # запрос с заголовками для авторизации
-        # и параметрами.
+        response = requests.get(upload_url, headers=self.get_headers(), params=parameters)  # запрос с заголовками для
+        # авторизации и параметрами.
         pprint(f'Получение ссылки для загрузки: {response.status_code}')
         return response.json()  # возврат ссылки в виде словаря JSON.
 
@@ -45,4 +45,7 @@ class YandexDisk:
             # response.raise_for_status()
             # if response.status_code == 202:
             #     print('success')
+
+    def create_folder(self, folder_name: str):
+        pass
 

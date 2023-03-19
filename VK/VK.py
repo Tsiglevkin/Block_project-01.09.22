@@ -2,7 +2,7 @@ import json
 import requests
 from datetime import datetime
 from tqdm import tqdm
-from yandex import YandexDisk
+from Yandex.yandex import YandexDisk
 import configparser
 
 
@@ -70,7 +70,7 @@ class VK:
 
     def _get_json_file(self):
         """This function records list in a file"""
-        with open('photos.json', 'w') as res:
+        with open('../photos.json', 'w') as res:
             json.dump(self.get_send_list(), res, indent=4)
 
     def _send_json(self, file_path):
